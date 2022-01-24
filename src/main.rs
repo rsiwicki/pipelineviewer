@@ -1,6 +1,6 @@
 use clap::{App, Arg};
-use std::fs::File;
 use std::env;
+use std::fs::File;
 use std::io::{self, ErrorKind, Read, Result, Write};
 
 const CHUNK_SIZE_KB: usize = 16 * 1024;
