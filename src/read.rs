@@ -1,9 +1,9 @@
-use std::io::{self, BufReader, Read, Result};
 use crate::CHUNK_SIZE_KB;
 use std::fs::File;
+use std::io::{self, BufReader, Read, Result};
+use std::sync::{Arc, Mutex};
 
-pub fn read(infile: &str) -> Result<Vec<u8>> {
-
+pub fn read_loop(infile: &str, quit: Arc<Mutex<bool>>) -> Result<()> {
     let mut reader: Box<dyn Read> = if !infile.is_empty() {
         Box::new(BufReader::new(File::open(infile)?))
     } else {
@@ -12,6 +12,19 @@ pub fn read(infile: &str) -> Result<Vec<u8>> {
 
     let mut buffer = [0; CHUNK_SIZE_KB];
 
-    let num_read = reader.read(&mut buffer)?;
-    Ok(Vec::from(&buffer[..num_read]))
+    loop {
+        let num_read = match reader.read(&mut buffer) {
+            Ok(0) => break,
+            Ok(x) => x,
+            Err(_) => break,
+        };
+
+        //TODO: send buffer to the stats thread
+        Vec::from(&buffer[..num_read]);
+    }
+
+    //TODO: send buffer empty to stats thread
+    let mut quit = quit.lock().unwrap();
+    *quit = true;
+    Ok(())
 }

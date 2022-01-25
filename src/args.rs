@@ -4,7 +4,7 @@ use std::env;
 pub struct Args {
     pub infile: String,
     pub outfile: String,
-    pub silent: bool
+    pub silent: bool,
 }
 
 impl Args {
