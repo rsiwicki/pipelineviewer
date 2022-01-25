@@ -1,3 +1,10 @@
+//! some documentation
+//!
+//! # Some header
+//!
+//! Something
+//!
+
 pub mod args;
 pub mod read;
 pub mod stats;
